@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интеллектуальная Игра</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #64b5f6, #c5cae9, #ff77a9, #db9ff3);
+            background-size: 400% 400%;
+            animation: gradientChange 15s infinite;
+            transition: background 2s ease-in-out;
+        }
+
+        @keyframes gradientChange {
+            0% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 100% 50%;
+            }
+            50% {
+                background-position: 0% 50%;
+            }
+            75% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        #game-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .task {
+            display: none;
+            margin: 20px 0;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 80%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-size: 24px;
+            color: #008000;
+        }
+
+        #celebration {
+            display: none;
+            margin-top: 20px;
+            font-size: 36px;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: colorChange 5s infinite, fadeIn 3s ease-in-out;
+        }
+
+        #congratulations {
+            display: none;
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 24px;
+            background-color: #FFD700;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        #feedback-button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        #feedback-button:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: #FFD700;
+            }
+            25% {
+                color: #FF4500;
+            }
+            50% {
+                color: #FFD700;
+            }
+            75% {
+                color: #FF4500;
+            }
+            100% {
+                color: #FFD700;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Интеллектуальная Игра</h1>
+        <div class="task" id="task1" style="display: block;">Расшифруйте этот код: <code>Uifsf jt b tfdsfu!</code><br><input type="text" class="answer" id="answer1"></div>
+        <div class="task" id="task2">Решите загадку: Что можно увидеть с закрытыми глазами?<br><input type="text" class="answer" id="answer2"></div>
+        <div class="task" id="task3">Раскройте шифр: <code>8-5-12-12-15</code><br><input type="text" class="answer" id="answer3"></div>
+        <div class="task" id="task4">Чему равна сумма углов треугольника?<br><input type="text" class="answer" id="answer4"></div>
+        <div class="task" id="task5">Сколько пальцев на руке у человека?<br><input type="text" class="answer" id="answer5"></div>
+        <button onclick="checkAnswer()">Ответить</button>
+        <div id="result"></div>
+        <div id="celebration">Поздравляю! Вы молодец! <br> Я тебя люблю!</div>
+    </div>
+
+    <div id="congratulations">
+        <p>Поздравляю! Ты успешно завершил(а) интеллектуальную игру!</p>
+        <p>Спасибо за участие и внимание! Я люблю тебя !</p>
+        <button id="feedback-button" onclick="openFeedback()">Обратная связь</button>
+    </div>
+
+    <script>
+        var currentTask = 1;
+
+        function checkAnswer() {
+            var currentAnswer = document.getElementById("answer" + currentTask).value.toLowerCase();
+            var correctAnswers = ["this is a secret", "сон", "hello", "180", "5"];
+
+            if (currentAnswer === correctAnswers[currentTask - 1]) {
+                document.getElementById("result").innerHTML = "Верно!";
+                document.getElementById("task" + currentTask).style.display = "none"; // Скрываем текущий вопрос
+
+                currentTask++;
+
+                if (currentTask <= correctAnswers.length) {
+                    document.getElementById("task" + currentTask).style.display = "block"; // Показываем следующий вопрос
+                } else {
+                    document.getElementById("result").innerHTML = "Вы молодец! Ваши ответы правильны.";
+                    document.getElementById("game-container").style.display = "none"; // Скрываем окно игры
+                    document.getElementById("congratulations").style.display = "block"; // Показываем титры
+                }
+            } else {
+                document.getElementById("result").innerHTML = "Попробуйте еще раз. У вас неправильный ответ.";
+            }
+        }
+
+        function openFeedback() {
+            window.open("https://t.me/VurnarAdmin", "_blank");
+        }
+    </script>
+</body>
+</html>
